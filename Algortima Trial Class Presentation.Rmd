@@ -1,0 +1,188 @@
+---
+title: "Algoritma Trial Class"
+author: "By: Team Algoritma"
+output: 
+  revealjs::revealjs_presentation:
+    center: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+#
+
+Slide ini dibuat untuk kebutuhan Trial Class Algoritma
+
+```{r}
+knitr::include_graphics("assets/Logo_Algoritma.png")
+```
+
+## Objectives
+
+Trial Class ini adalah pengalaman belajar singkat di kelas Algoritma. Materi yang akan dibawakan meliputi:
+
+- Perkenalan Ke Dunia Data Science
+- Eksplorasi Data  
+- Visualisasi Data
+
+# Perkenalan Dunia Data Science
+
+## Apa itu Data Science? 
+
+## Definisi Data Science
+
+```{r}
+knitr::include_graphics("assets/data_science_definition.PNG")
+```
+
+## Implementasi Data Science
+
+```{r}
+knitr::include_graphics("assets/data_science_implementasi.png")
+```
+
+# Data Science Tools
+
+## Tools 
+
+```{r}
+knitr::include_graphics("assets/data_science_programming.png")
+```
+
+## Tools & Analogy
+
+```{r}
+knitr::include_graphics("assets/data_science_tools.png")
+```
+
+## Kenapa Belajar R?
+
+## R Sangat Mudah Untuk Digunakan 
+
+```{r}
+knitr::include_graphics("assets/r_newbie.png")
+```
+
+## Big Data
+
+```{r}
+knitr::include_graphics("assets/r_bigdata.png")
+```
+
+## Sudah Digunakan Oleh Banyak Perusahaan Besar
+
+```{r}
+knitr::include_graphics("assets/r_big_company.png")
+```
+
+## Banyak Sumber Informasi
+
+```{r}
+knitr::include_graphics("assets/r_large_community.png")
+```
+
+## Gratis
+
+```{r}
+knitr::include_graphics("assets/r_open_source.png")
+```
+
+# Langkah Awal Menjadi Seorang Data Scientist
+
+## Mempelajari Bagaimana Mengolah Data
+
+Study Case: Transaksi Retail Secara Online
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(rmarkdown)
+
+retail <- read.csv("data_input/retail.csv")
+
+retail %>% 
+  paged_table() %>% 
+  head()
+```
+
+## Kasus 1:
+
+Bagaimanakah performa penjualan untuk setiap segment barang yang dijual pada perusahaan retail tersebut?
+
+## Hasil Eksplorasi Data 
+
+```{r}
+df1 <- retail %>% 
+  group_by(Category) %>% # Kita isi dengan nama kolom yang datanya ingin kita kelompokan 
+  summarise(Total = sum(Sales)) %>% # Kita isi denan rumus matematikan yang kita inginkan 
+  arrange(desc(Total))
+
+paged_table(df1)
+```
+
+## Hasil Visualisasi
+
+```{r,message=FALSE,warning=FALSE}
+library(ggplot2)
+library(glue)
+library(plotly)
+library(scales)
+options(scipen = 1)
+
+plot1 <- df1 %>% 
+  ggplot(mapping = aes(y = reorder(Category, Total), 
+                       x = Total, 
+                       text =  glue("{Category}
+                         Sales: {comma(Total, 3)}"))) +
+  geom_col(mapping = aes(fill = Category)) +
+  scale_x_continuous(labels = comma) +
+  labs(title = "Performa Penjualan Untuk Setiap Category",
+       y = "Category",
+       x = "Performa Sales") +
+  theme_minimal()+
+  theme(legend.position = "none")
+
+ggplotly(plot1, tooltip = "text")
+```
+
+## Kasus 2:
+
+Bagaimana rekam penggunaan mode pengiriman barang? Mode pengiriman apa yang paling sering digunakan? 
+
+## Hasil Eksplorasi Data
+
+```{r}
+retail %>% 
+  group_by(Ship.Mode) %>% # Kita isi dengan nama kolom yang datanya ingin kita kelompokan 
+  summarise(Freq = n()) %>% # Kita isi dengan rumus matematikan yang kita inginkan 
+  arrange(desc(Freq)) %>% 
+  paged_table()
+```
+
+## Hasil Visualisasi
+
+```{r,message=FALSE,warning=FALSE}
+library(ggplot2)
+library(glue)
+library(plotly)
+library(scales)
+
+plot2 <- retail %>% 
+  group_by(Ship.Mode) %>% 
+  summarise(Freq = n()) %>% 
+  arrange(desc(Freq)) %>% 
+  ggplot(mapping = aes(x = reorder(Ship.Mode, Freq), 
+                       y = Freq, 
+                       text =  glue("{Ship.Mode}
+                         Shipment: {comma(Freq)}"))) +
+  geom_col(mapping = aes(fill = Ship.Mode)) +
+  labs(title = "Jumlah Pelanggan Berdasarkan Tipe Pengiriman",
+       x = "Tipe Pengiriman",
+       y = "Total Pelanggan") +
+  theme_minimal()+
+  theme(legend.position = "none")
+
+ggplotly(plot2, tooltip = "text")
+```
+
+# Mari Kita Coba Pelajari!
